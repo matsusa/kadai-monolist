@@ -15,9 +15,53 @@ class OwnershipsController < ApplicationController
       current_user.want(@item)
       flash[:success] = '商品を Want しました。'
     end 
+    p "*****params***"
+    p params
+    # Have 関係として保存
+    if params[:type] == 'Have'
+      current_user.have(@item)
+      flash[:success] = '商品を Have しました。'
+    end 
   
     redirect_back(fallback_location: root_path)
-  end 
+  end
+  
+  def edit
+    @item = Item.find(params[:item_id])
+    
+    if params[:type] == 'Have'
+      current_user.unhave(@item)
+      flash[:success] = '商品の Have を解除しました。'
+    end
+    
+    redirect_back(fallback_location: root_path)
+  end
+  
+  def update
+    @item = Item.find(params[:item_id])
+    
+    if params[:type] == 'Want'
+      current_user.want(@item)
+      flash[:success] = '商品の Have を Want に変更しました。'
+    
+    elsif params[:type] == 'Have'
+      current_user.have(@item)
+      flash[:success] = '商品の Want を Have に変更しました。'
+    end
+   
+    redirect_back(fallback_location: root_path)
+  end
+  
+  # def destroy
+  #   @item = Item.find(params[:item_id])
+    
+  #   if params[:type] == 'Want'
+  #     current_user.unwant(@item)
+  #     flash[:success] = '商品の Want を解除しました。'
+  #   end
+    
+  #   redirect_back(fallback_location: root_path)
+  # end 
   
   def destroy
     @item = Item.find(params[:item_id])
@@ -25,6 +69,9 @@ class OwnershipsController < ApplicationController
     if params[:type] == 'Want'
       current_user.unwant(@item)
       flash[:success] = '商品の Want を解除しました。'
+    elsif params[:type] == 'Have'
+      current_user.unhave(@item)
+      flash[:success] = '商品のHave  を解除しました。'
     end 
     
     redirect_back(fallback_location: root_path)
